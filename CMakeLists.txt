@@ -51,6 +51,8 @@
 cmake_minimum_required (VERSION 3.13)
 project (imgui)
 
+MESSAGE(Current_dir_ImGui:${CMAKE_CURRENT_SOURCE_DIR})
+
 # CMake: 3.13: option() honors normal variables. Sufficiently new CMake and this policy allow user to configure library
 # by setting plain variables as opposed to cache variables as demonstrated in example.
 cmake_policy(SET CMP0077 NEW)
