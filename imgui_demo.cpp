@@ -1,4 +1,4 @@
-// dear imgui, v1.90.9 WIP
+// dear imgui, v1.91.0 WIP
 // (demo code)
 
 // Help:
@@ -439,7 +439,9 @@ void ImGui::ShowDemoWindow(bool* p_open)
         ImGui::BulletText("See the ShowDemoWindow() code in imgui_demo.cpp. <- you are here!");
         ImGui::BulletText("See comments in imgui.cpp.");
         ImGui::BulletText("See example applications in the examples/ folder.");
-        ImGui::BulletText("Read the FAQ at https://www.dearimgui.com/faq/");
+        ImGui::BulletText("Read the FAQ at ");
+        ImGui::SameLine(0, 0);
+        ImGui::TextLinkOpenURL("https://www.dearimgui.com/faq/");
         ImGui::BulletText("Set 'io.ConfigFlags |= NavEnableKeyboard' for keyboard controls.");
         ImGui::BulletText("Set 'io.ConfigFlags |= NavEnableGamepad' for gamepad controls.");
 
@@ -540,8 +542,9 @@ void ImGui::ShowDemoWindow(bool* p_open)
         IMGUI_DEMO_MARKER("Configuration/Style");
         if (ImGui::TreeNode("Style"))
         {
+            ImGui::Checkbox("Style Editor", &show_tool_style_editor);
+            ImGui::SameLine();
             HelpMarker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.");
-            ImGui::ShowStyleEditor();
             ImGui::TreePop();
             ImGui::Spacing();
         }
@@ -889,12 +892,11 @@ static void ShowDemoWindowWidgets()
 
         // Using ImGuiHoveredFlags_ForTooltip will pull flags from 'style.HoverFlagsForTooltipMouse' or 'style.HoverFlagsForTooltipNav',
         // which default value include the ImGuiHoveredFlags_AllowWhenDisabled flag.
-        // As a result, Set
         ImGui::BeginDisabled();
         ImGui::Button("Disabled item", sz);
-        ImGui::EndDisabled();
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip))
             ImGui::SetTooltip("I am a a tooltip for a disabled item.");
+        ImGui::EndDisabled();
 
         ImGui::TreePop();
     }
@@ -951,6 +953,7 @@ static void ShowDemoWindowWidgets()
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAllColumns",    &base_flags, ImGuiTreeNodeFlags_SpanAllColumns); ImGui::SameLine(); HelpMarker("For use in Tables only.");
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_AllowOverlap",      &base_flags, ImGuiTreeNodeFlags_AllowOverlap);
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed",            &base_flags, ImGuiTreeNodeFlags_Framed); ImGui::SameLine(); HelpMarker("Draw frame with background (e.g. for CollapsingHeader)");
+            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_NavLeftJumpsBackHere", &base_flags, ImGuiTreeNodeFlags_NavLeftJumpsBackHere);
             ImGui::Checkbox("Align label with current X position", &align_label_with_current_x_position);
             ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
             ImGui::Text("Hello!");
@@ -983,7 +986,7 @@ static void ShowDemoWindowWidgets()
                         ImGui::Text("This is a drag and drop source");
                         ImGui::EndDragDropSource();
                     }
-                    if (i == 2)
+                    if (i == 2 && (base_flags & ImGuiTreeNodeFlags_SpanTextWidth))
                     {
                         // Item 2 has an additional inline button to help demonstrate SpanTextWidth.
                         ImGui::SameLine();
@@ -992,6 +995,8 @@ static void ShowDemoWindowWidgets()
                     if (node_open)
                     {
                         ImGui::BulletText("Blah blah\nBlah Blah");
+                        ImGui::SameLine();
+                        ImGui::SmallButton("Button");
                         ImGui::TreePop();
                     }
                 }
@@ -6513,6 +6518,17 @@ void ImGui::ShowAboutWindow(bool* p_open)
     }
     IMGUI_DEMO_MARKER("Tools/About Dear ImGui");
     ImGui::Text("Dear ImGui %s (%d)", IMGUI_VERSION, IMGUI_VERSION_NUM);
+
+    ImGui::TextLinkOpenURL("Homepage", "https://github.com/ocornut/imgui");
+    ImGui::SameLine();
+    ImGui::TextLinkOpenURL("FAQ", "https://github.com/ocornut/imgui/blob/master/docs/FAQ.md");
+    ImGui::SameLine();
+    ImGui::TextLinkOpenURL("Wiki", "https://github.com/ocornut/imgui/wiki");
+    ImGui::SameLine();
+    ImGui::TextLinkOpenURL("Releases", "https://github.com/ocornut/imgui/releases");
+    ImGui::SameLine();
+    ImGui::TextLinkOpenURL("Funding", "https://github.com/ocornut/imgui/wiki/Funding");
+
     ImGui::Separator();
     ImGui::Text("By Omar Cornut and all Dear ImGui contributors.");
     ImGui::Text("Dear ImGui is licensed under the MIT License, see LICENSE for more information.");
@@ -7742,7 +7758,7 @@ static void ShowPlaceholderObject(const char* prefix, int uid)
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
-    bool node_open = ImGui::TreeNode("Object", "%s_%u", prefix, uid);
+    bool node_open = ImGui::TreeNode("##Object", "%s_%u", prefix, uid);
     ImGui::TableSetColumnIndex(1);
     ImGui::Text("my sailor is rich");
 
